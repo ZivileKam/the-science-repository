@@ -25,5 +25,4 @@ exclude:
   - "*.Rproj"
   - "*.code-workspace"
   - ".Rprofile"
-  - ".Renviron.example"
   - "README.md~"

@@ -38,8 +38,7 @@ the next render — nothing is copied between them.
    install.packages("renv")   # only if you don't have it
    renv::restore()            # installs the exact package versions used here
    ```
-4. **Copy the env template:** `cp .Renviron.example .Renviron`. Leave `DATA_MODE=mock` (default) or set `real`.
-5. **Build the two outputs:**
+4. **Build the two outputs:**
    ```bash
    quarto render reports/webpage      # → renders/webpage/  (the website)
    quarto render reports/manuscript   # → renders/manuscript/generated/  (paper inputs)
@@ -85,4 +84,4 @@ co-authoring. See [renders/manuscript/README.md](renders/manuscript/README.md).
 
 - **R packages** are pinned with [`renv`](https://rstudio.github.io/renv/) (`renv.lock`). Run `renv::restore()` on a new machine; `renv::snapshot()` after installing packages.
 - **Real data never gets committed.** Everything under `data/raw/` and `data/processed/` is gitignored, plus every common data extension everywhere except `data/mock/`. See [.gitignore](.gitignore) and [data/README.md](data/README.md).
-- **LLM safety.** Open the repo with `the-science-repository.llm.code-workspace` (hides raw/processed from the editor); [`.claude/settings.json`](.claude/settings.json) also blocks tool reads of those folders. Scripts default to `DATA_MODE=mock`.
+- **LLM safety.** Open the repo with `the-science-repository.llm.code-workspace` (hides raw/processed from the editor); [`.claude/settings.json`](.claude/settings.json) also blocks tool reads of those folders. The analysis reads the committed mock data by default.
