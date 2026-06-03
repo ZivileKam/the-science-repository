@@ -20,7 +20,7 @@ script; this is your stage direction.
 
 - Project open via `the-science-repository.Rproj` (working dir = repo root).
 - `Session → Restart R`, then `Ctrl + L` to clear the Console. **Start blank.**
-- Five tabs open in order: `01_console_basics.R` … `05_report.qmd`.
+- Five tabs open in order: `01_console_basics.md` … `05_report.qmd`.
 - Font size up (Ctrl/Cmd + `+`) so the back row can read it.
 - Have `05_report.html` ready in a browser tab as a fallback for Pt. 4.
 - One sentence to open: *"Yesterday we talked about what R is. This morning we
@@ -36,9 +36,10 @@ Draw or show the arc once and refer back to it all morning:
 
 ---
 
-## Pt. 1 — The Console  ·  ~30 min  ·  `01_console_basics.R`
+## Pt. 1 — The Console  ·  ~30 min  ·  `01_console_basics.md`
 
-**Goal:** values, types, assignment, vectors, `NA`, factors, functions, packages.
+**Goal:** values, types, assignment, vectors, `NA`, factors, functions, control
+flow (`if`/`for`/`lapply`), packages.
 Type these **live in the Console** (don't source the file yet — that's the point;
 the console is ephemeral). The file is your crib and their take-home copy.
 
@@ -96,7 +97,24 @@ the console is ephemeral). The file is your crib and their take-home copy.
 - **Type:** `?round` → **point at the Help pane.** *"Every function documents its
   inputs here. Reading help pages is a core skill, not a defeat."*
 
-### Beat 7 — Packages (5 min)
+### Beat 7 — Control flow: decide, then repeat (5 min)
+- **Decide — type:** `if (6.2 > 5) print("likely") else print("unlikely")`. *"`if`
+  runs a block only when a condition is TRUE. The condition has to be a SINGLE
+  TRUE/FALSE — the very thing `>` and `==` gave us back in Beat 2."*
+- **Repeat — the fun one:** type
+  `for (word in c("brilliant","thoughtful","unstoppable")) print(paste("You are", word))`.
+  *"For each item in the vector, run the body once — watch it print three times."*
+  Crowd-pleaser if there's time: nest two loops to print every opener × gripe combo.
+- **The grown-up version — `lapply`/`sapply`:** build a small named list of scores
+  per condition, then `sapply(by_condition, mean)`. *"Say what to do ONCE and R
+  repeats it across every item — here, a mean per group. Swap `mean` for a model
+  and you've fit it to every condition in one line. The tidyverse spells this
+  `purrr::map()`."*
+- **Say:** *"`for` does something many times; `lapply`/`map` does it AND hands back
+  a result for each. You'll rarely write a raw loop in the tidyverse — but you
+  must be able to READ one when an AI writes it for you."*
+
+### Beat 8 — Packages (5 min)
 - **Motivate from what they know:** **type** `mean(ages)`, `sd(ages)`,
   `median(ages)`, `min(ages)`, `max(ages)`. *"base R already has every
   descriptive — but one function at a time. In SPSS, one click gave you a whole
@@ -326,7 +344,7 @@ it reuses the same engine; it is the twin of a real `reports/webpage/` page.
 | If you're… | Do this |
 | --- | --- |
 | **On time** | Run as written. Take the break between Pt. 2½ and Pt. 3 — right after the visualisation high. |
-| **Behind** | In Pt. 1, cut the `data.frame()` section (Beat after packages) and the `seq()`/`%%` extras. In Pt. 2½, show only blocks 3, 5→6, and 8. In Pt. 4, **show the pre-rendered HTML** instead of live-rendering. Never cut the `could not find function` and `object not found` error demos, or the Pt. 2½ "five lines vs one line" aha — they pay off all week. |
+| **Behind** | In Pt. 1, cut the `data.frame()` section (Beat after packages), the `lapply`/`if` half of control flow (keep the fun `for` loop), and the `seq()`/`%%` extras. In Pt. 2½, show only blocks 3, 5→6, and 8. In Pt. 4, **show the pre-rendered HTML** instead of live-rendering. Never cut the `could not find function` and `object not found` error demos, or the Pt. 2½ "five lines vs one line" aha — they pay off all week. |
 | **Ahead / advanced room** | Pt. 1: show `summary(demo)` and `str()`. Pt. 2: add a second `geom` or `facet_wrap(~ gender)`. Pt. 3: have them spot that `clean_consumer()` only does *part* of the real cleaning (compare to `R/functions/data_loading.R`) — a great "read and diagnose" exercise. Pt. 4: toggle `code-fold: true` and re-render. |
 
 **Two checkpoints to pause and read the room:**

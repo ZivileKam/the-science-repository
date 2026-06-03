@@ -38,6 +38,7 @@ x <- 5.5                   # ASSIGNMENT: store the right side under a name
 ages <- c(36, 63, 24)      # a VECTOR: many values of one type = a column
 mean(ages)                 # functions summarise a whole vector
 ages > 30                  # comparison -> a vector of TRUE/FALSE
+ages[ages > 30]            # keep only the elements that match (root of filtering)
 
 scores <- c(4, 5, NA, 7)   # NA = "unknown"; it spreads on purpose
 mean(scores)               # -> NA
@@ -45,9 +46,14 @@ mean(scores, na.rm = TRUE) # tell R to ignore the gap (na.rm is an ARGUMENT)
 
 condition <- factor(c("control", "scarcity"))  # a FACTOR: fixed categories
 levels(condition)          # the allowed values it remembers
+as.numeric("42")           # FIX a type: text -> number (also as.character/as.factor)
 
 round(3.14, digits = 2)    # a FUNCTION call: name(arguments)
 ?round                     # read any function's documentation (Help pane)
+
+if (mean(ages) > 30) "high" else "low"        # a DECISION: run code only when TRUE
+for (a in ages) print(a)                      # a LOOP: do an action once per element
+sapply(list(x = 1:3, y = 4:6), mean)          # apply a function to each item -> results
 
 mean(ages); sd(ages); min(ages); max(ages)   # base R: one statistic at a time
 library(psych)             # load a PACKAGE (do it once per session)

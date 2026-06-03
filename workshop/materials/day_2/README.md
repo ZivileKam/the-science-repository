@@ -2,7 +2,7 @@
 
 A complete, runnable, **live-coding walkthrough** that takes participants from
 their very first command (`5 + 7`) to a rendered HTML report — covering data
-types, assignment, functions, and packages along the way.
+types, assignment, functions, control flow, and packages along the way.
 
 It is deliberately built as a **miniature of the real project** in this
 repository, using the **same teaching dataset** (`data/mock/consumer_data_raw.csv`).
@@ -25,7 +25,7 @@ doubles as a take-home reference.
 
 | Pt. | File | The big idea | ~ time |
 | --- | --- | --- | --- |
-| **1 · Console** | [`01_console_basics.R`](01_console_basics.R) | R as a calculator → **values & types** → **assignment** (`<-`) → **vectors** → `NA` → **factors** → **functions** → **packages** | 30 min |
+| **1 · Console** | [`01_console_basics.md`](01_console_basics.md) | R as a calculator → **values & types** → **assignment** (`<-`) → **vectors** → `NA` → **factors** → **functions** → **control flow** (`if`, `for`, `lapply`/`map`) → **packages** | 30 min |
 | **2 · Script** | [`02_first_script.R`](02_first_script.R) | Why save code. The same ideas, now a **reproducible script** on the real CSV: read → inspect → clean → describe → plot → save. | 25 min |
 | **2½ · Visualise** | [`02b_visualisation.R`](02b_visualisation.R) | Build one figure **layer by layer** — data → `aes()` → `geom_*()` → labels — until it's publication-ready. The grammar of graphics, live. The fun part. | 12 min |
 | **3 · Functions** | [`03_functions.R`](03_functions.R) + [`04_script_with_functions.R`](04_script_with_functions.R) | Extract the repeated recipes into **named functions** (an "engine") and watch the analysis script shrink to a readable summary. | 20 min |
@@ -35,7 +35,7 @@ Supporting material:
 
 | File | For whom |
 | --- | --- |
-| [`FACILITATOR_GUIDE.md`](FACILITATOR_GUIDE.md) | The presenter. Beat-by-beat runbook: what to type, what to say, what to point at, deliberate errors to show, anticipated questions, timing, and cut/extend options. |
+| [`PRESENTOR_GUIDE.md`](PRESENTOR_GUIDE.md) | The presenter. Beat-by-beat runbook: what to type, what to say, what to point at, deliberate errors to show, anticipated questions, timing, and cut/extend options. |
 | [`PARTICIPANT_HANDOUT.md`](PARTICIPANT_HANDOUT.md) | Participants. A two-page recap: the snippets, a glossary, the five errors you'll meet, and a "concept → where it lives in this repo" map. |
 | `05_report.html` | Everyone. A **pre-rendered copy** of the Pt. 4 report — a fallback to show if a live render misbehaves. |
 
@@ -65,8 +65,9 @@ Supporting material:
 All commands assume the project is open (working directory = repo root).
 
 ```r
-# Pt. 1 — type lines into the Console live (Cmd/Ctrl + Enter), or:
-source("workshop/materials/day_2/01_console_basics.R")
+# Pt. 1 — open 01_console_basics.md and type the lines into the Console live
+#         (Cmd/Ctrl + Enter): read -> predict -> run each one. It is a markdown
+#         walkthrough, not a .R script, so there is nothing to source.
 
 # Pt. 2 — run the whole script ("Source", or Cmd/Ctrl + Shift + Enter)
 source("workshop/materials/day_2/02_first_script.R")
