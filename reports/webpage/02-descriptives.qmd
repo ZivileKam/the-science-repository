@@ -1,55 +1,144 @@
 ---
-title: "2 · Descriptives"
+title: "2 - Descriptives"
 subtitle: "Summarise the sample and look before you model"
 date: today
 ---
 
 ```{r setup}
 #| include: false
-source(file.path(rprojroot::find_root(rprojroot::is_git_root), "R", "01_setup.R"))
-clean <- get_clean_consumer_data()   # cached file from page 1, or rebuilt if absent
+
+project_root <- getwd()
+while (!dir.exists(file.path(project_root, ".git"))) {
+  parent <- dirname(project_root)
+  if (identical(parent, project_root)) {
+    stop("Could not find the project root. Please render from inside the HORIGIN 1B project.")
+  }
+  project_root <- parent
+}
+
+required_packages <- c("haven", "dplyr", "janitor", "ggplot2", "knitr")
+to_install <- setdiff(required_packages, rownames(installed.packages()))
+if (length(to_install) > 0) {
+  install.packages(to_install, repos = "https://cloud.r-project.org")
+}
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+HO_EXP1b_raw <- haven::read_sav(
+  file.path(project_root, "data", "raw", "HO_EXP1b_raw.sav")
+)
+
+EXP1b_WORK <- HO_EXP1b_raw |>
+  dplyr::filter(Finished == 1) |>
+  janitor::clean_names()
+
+EXP1b_WORK$cond <- factor(
+  EXP1b_WORK$cond,
+  levels = c(0, 1),
+  labels = c("no origin", "origin")
+)
+
+item_mapping <- list(
+  happiness = c("hap1", "hap2", "hap3"),
+  desirablity = c("de1", "de2", "de3")
+)
+
+scale_names <- paste0(names(item_mapping), "_mean")
+
+EXP1b_WORK[scale_names] <- lapply(
+  item_mapping,
+  function(items) rowMeans(EXP1b_WORK[, items], na.rm = TRUE)
+)
 ```
 
 This page reads the cleaned dataset produced by
-[1 · Data preparation](01-data-preparation.qmd) and does two things every
-analysis should do before any model: **describe the sample** and **plot the
-patterns**.
+[1 - Data preparation](01-data-preparation.qmd) and describes the sample before
+any model is fitted.
 
-## Outcomes by condition
+## Sample By Condition
 
-`descriptives_by_condition()` lives in
-[`R/functions/analysis.R`](https://github.com/TheDataFlowCompany/the-science-repository/blob/main/R/functions/analysis.R)
-and is shared with the manuscript, so the numbers can't drift between the two.
+```{r}
+#| label: tbl-condition-n
+#| tbl-cap: "Number of finished participants by experimental condition."
+condition_n <- EXP1b_WORK |>
+  dplyr::count(cond, name = "n")
+
+knitr::kable(condition_n)
+```
+
+## Outcomes By Condition
 
 ```{r}
 #| label: tbl-desc
-#| tbl-cap: "Means and SDs of the key outcomes, by experimental condition."
-knitr::kable(descriptives_by_condition(clean), digits = 2)
+#| tbl-cap: "Means and SDs of happiness and desirability, by experimental condition."
+descriptives <- EXP1b_WORK |>
+  dplyr::group_by(cond) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    mean_happiness = mean(happiness_mean, na.rm = TRUE),
+    sd_happiness = stats::sd(happiness_mean, na.rm = TRUE),
+    mean_desirablity = mean(desirablity_mean, na.rm = TRUE),
+    sd_desirablity = stats::sd(desirablity_mean, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(descriptives, digits = 2)
 ```
 
-The `combined_frame` row already stands out on `mean_pi` (purchase intention).
-The models on the next page test whether that difference holds up.
-
-## Look first
+## Look First
 
 ```{r}
-#| label: fig-pi-by-cond
-#| fig-cap: "Purchase intention by condition. Red points are condition means; bars are 95% CIs."
+#| label: fig-gender-by-cond
+#| fig-cap: "Participant gender by experimental condition."
 #| fig-width: 7
 #| fig-height: 4
-plot_pi_by_condition(clean)
+ggplot2::ggplot(
+  EXP1b_WORK,
+  ggplot2::aes(x = cond, fill = as.factor(gender))
+) +
+  ggplot2::geom_bar(position = "dodge") +
+  ggplot2::labs(x = NULL, y = "Participants", fill = "Gender") +
+  ggplot2::theme_minimal()
 ```
-
-Why might `combined_frame` do better? The scatter below is the clue: the frames
-also raise **perceived value**, and perceived value tracks purchase intention
-closely — the setup for a mediation story.
 
 ```{r}
-#| label: fig-mediation-scatter
-#| fig-cap: "Perceived value (the mediator) versus purchase intention, coloured by condition."
+#| label: fig-happiness-by-cond
+#| fig-cap: "Happiness by experimental condition. Red points are condition means; bars are 95% CIs."
 #| fig-width: 7
 #| fig-height: 4
-plot_mediation_scatter(clean)
+ggplot2::ggplot(
+  EXP1b_WORK,
+  ggplot2::aes(x = cond, y = happiness_mean)
+) +
+  ggplot2::geom_jitter(width = 0.15, alpha = 0.25) +
+  ggplot2::stat_summary(fun = mean, geom = "point", size = 3, colour = "firebrick") +
+  ggplot2::stat_summary(
+    fun.data = ggplot2::mean_cl_normal,
+    geom = "errorbar",
+    width = 0.15,
+    colour = "firebrick"
+  ) +
+  ggplot2::labs(x = NULL, y = "Happiness mean") +
+  ggplot2::theme_minimal()
 ```
 
-Next: [3 · Analysis](03-analysis.qmd).
+```{r}
+#| label: fig-happiness-desirability
+#| fig-cap: "Desirability versus happiness, coloured by experimental condition."
+#| fig-width: 7
+#| fig-height: 4
+ggplot2::ggplot(
+  EXP1b_WORK,
+  ggplot2::aes(x = desirablity_mean, y = happiness_mean, colour = cond)
+) +
+  ggplot2::geom_jitter(width = 0.05, height = 0.05, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "lm", se = FALSE) +
+  ggplot2::labs(
+    x = "Desirability mean",
+    y = "Happiness mean",
+    colour = NULL
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+Next: [3 - Analysis](03-analysis.qmd).
